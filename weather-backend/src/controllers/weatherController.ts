@@ -25,11 +25,14 @@ export async function getDailySummary(city: string, date: Date) {
   return {
     city,
     date: date.toISOString().split('T')[0],
-    avgTemp: temperatures.reduce((a, b) => a + b, 0) / temperatures.length,
-    maxTemp: Math.max(...temperatures),
-    minTemp: Math.min(...temperatures),
-    dominantWeather: getDominantWeather(weatherConditions),
+    avgTemp: temperatures.filter((temp): temp is number => temp !== null && temp !== undefined)
+      .reduce((a, b) => a + b, 0) / temperatures.filter((temp): temp is number => temp !== null && temp !== undefined).length,
+    maxTemp: Math.max(...temperatures.filter((temp): temp is number => temp !== null && temp !== undefined)),
+    minTemp: Math.min(...temperatures.filter((temp): temp is number => temp !== null && temp !== undefined)),
+    dominantWeather: getDominantWeather(weatherConditions.filter((condition): condition is string => condition !== null && condition !== undefined)),
   };
+  
+  
 }
 
 function getDominantWeather(conditions: string[]): string {
